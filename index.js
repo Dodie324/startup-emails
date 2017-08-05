@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const cookieSession = require("cookie-session");
+const cookieSession = require("cookie-session"); //stores session data into the cookie; no need to install outside server to store a reference to the session like express-session
 const passport = require("passport");
 const keys = require("./config/keys");
 require("./models/User");
@@ -11,9 +11,14 @@ interacts with mongoDB;
 this will help create collections in MongoDB
 by using model classes
 */
+
 mongoose.connect(keys.MONGO_URI);
 
 const app = express();
+
+/*
+Middlewares are small func that can be used to modifiy incoming requests to our app before they're sent off to route handlers
+*/
 
 app.use(
   cookieSession({
