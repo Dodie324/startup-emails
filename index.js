@@ -5,6 +5,7 @@ const passport = require('passport');
 const bodyParser = require('body-parser');
 const keys = require('./config/keys');
 require('./models/User');
+require('./models/Survey');
 require('./services/passport');
 
 /*
@@ -24,10 +25,10 @@ Middlewares are small func that can be used to modifiy incoming requests to our 
 app.use(bodyParser.json());
 
 app.use(
-	cookieSession({
-		maxAge: 30 * 24 * 60 * 60 * 1000, // how long it can exist in browser (30 Days in this case)
-		keys: [keys.COOKIE_KEY] // allows us to pass keys that can encrypt any cookie
-	})
+  cookieSession({
+    maxAge: 30 * 24 * 60 * 60 * 1000, // how long it can exist in browser (30 Days in this case)
+    keys: [keys.COOKIE_KEY] // allows us to pass keys that can encrypt any cookie
+  })
 );
 
 app.use(passport.initialize());
@@ -35,15 +36,16 @@ app.use(passport.session());
 
 require('./routes/authRoutes')(app);
 require('./routes/billingRoutes')(app);
+require('./routes/surveyRoutes')(app);
 
 if (process.env.NODE_ENV === 'production') {
-	app.use(express.static('client/build'));
+  app.use(express.static('client/build'));
 
-	// catch all case
-	const path = require('path');
-	app.get('*', (req, res) => {
-		res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-	});
+  // catch all case
+  const path = require('path');
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
 }
 
 /* dynamically decide which port to listen on.
